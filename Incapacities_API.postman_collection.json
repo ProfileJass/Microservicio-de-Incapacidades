@@ -1,0 +1,243 @@
+{
+  "info": {
+    "name": "Incapacities API - Test Collection",
+    "description": "Colección de prueba para el API de Incapacidades con datos de prueba precargados",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Data - Consultas",
+      "item": [
+        {
+          "name": "Get All Users",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/data/users",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "data", "users"]
+            }
+          }
+        },
+        {
+          "name": "Get User By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/data/users/550e8400-e29b-41d4-a716-446655440001",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "data", "users", "550e8400-e29b-41d4-a716-446655440001"]
+            }
+          }
+        },
+        {
+          "name": "Get All Payrolls",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/data/payrolls",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "data", "payrolls"]
+            }
+          }
+        },
+        {
+          "name": "Get Payroll By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/data/payrolls/770e8400-e29b-41d4-a716-446655440001",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "data", "payrolls", "770e8400-e29b-41d4-a716-446655440001"]
+            }
+          }
+        },
+        {
+          "name": "Get Payrolls By User",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/data/payrolls/user/550e8400-e29b-41d4-a716-446655440001",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "data", "payrolls", "user", "550e8400-e29b-41d4-a716-446655440001"]
+            }
+          }
+        },
+        {
+          "name": "Get All Companies",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/data/companies",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "data", "companies"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Incapacities",
+      "item": [
+        {
+          "name": "Create Incapacity - Enfermedad",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id_user\": \"550e8400-e29b-41d4-a716-446655440001\",\n  \"id_payroll\": \"770e8400-e29b-41d4-a716-446655440001\",\n  \"start_date\": \"2025-11-15\",\n  \"end_date\": \"2025-11-20\",\n  \"type\": \"enfermedad\",\n  \"observacion\": \"Gripe común\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/incapacities",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "incapacities"]
+            }
+          }
+        },
+        {
+          "name": "Create Incapacity - Accidente",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id_user\": \"550e8400-e29b-41d4-a716-446655440002\",\n  \"id_payroll\": \"770e8400-e29b-41d4-a716-446655440002\",\n  \"start_date\": \"2025-11-10\",\n  \"end_date\": \"2025-11-25\",\n  \"type\": \"accidente\",\n  \"observacion\": \"Accidente laboral\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/incapacities",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "incapacities"]
+            }
+          }
+        },
+        {
+          "name": "Create Incapacity - Maternidad",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id_user\": \"550e8400-e29b-41d4-a716-446655440004\",\n  \"id_payroll\": \"770e8400-e29b-41d4-a716-446655440004\",\n  \"start_date\": \"2025-12-01\",\n  \"end_date\": \"2026-03-31\",\n  \"type\": \"maternidad\",\n  \"observacion\": \"Licencia de maternidad\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/incapacities",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "incapacities"]
+            }
+          }
+        },
+        {
+          "name": "Get All Incapacities",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/incapacities",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "incapacities"]
+            }
+          }
+        },
+        {
+          "name": "Get Incapacities By User",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:3000/api/incapacities/user/550e8400-e29b-41d4-a716-446655440001",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "incapacities", "user", "550e8400-e29b-41d4-a716-446655440001"]
+            }
+          }
+        },
+        {
+          "name": "Update Incapacity Status",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"confirmada\",\n  \"observacion\": \"Aprobada por recursos humanos\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/incapacities/:id",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "incapacities", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "REPLACE_WITH_INCAPACITY_ID"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Health Check",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:3000/health",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "3000",
+          "path": ["health"]
+        }
+      }
+    }
+  ]
+}
