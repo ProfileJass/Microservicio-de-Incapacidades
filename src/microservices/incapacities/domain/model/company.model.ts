@@ -2,7 +2,7 @@ import { Model, DataTypes } from 'sequelize';
 import { sequelize } from '../../../../config/database';
 
 export class CompanyModel extends Model {
-  declare id_company: string;
+  declare id_company: number;
   declare nameCompany: string;
   declare NIT: string;
   declare adressCompany: string;
@@ -12,8 +12,9 @@ export class CompanyModel extends Model {
 CompanyModel.init(
   {
     id_company: {
-      type: DataTypes.UUID,
+      type: DataTypes.INTEGER,
       primaryKey: true,
+      autoIncrement: true,
       allowNull: false,
     },
     nameCompany: {

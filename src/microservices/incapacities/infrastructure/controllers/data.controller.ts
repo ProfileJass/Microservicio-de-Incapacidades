@@ -15,7 +15,8 @@ export class DataController {
   // Obtener un usuario por ID
   getUserById = asyncHandler(async (req: Request, res: Response): Promise<Response> => {
     const { id } = req.params;
-    const user = await UserModel.findByPk(id);
+    const idNum = parseInt(id, 10);
+    const user = await UserModel.findByPk(idNum);
     
     if (!user) {
       return ResponseHandler.error(res, 'Usuario no encontrado', 'USER_NOT_FOUND', 404);
@@ -47,7 +48,8 @@ export class DataController {
   // Obtener una nómina por ID
   getPayrollById = asyncHandler(async (req: Request, res: Response): Promise<Response> => {
     const { id } = req.params;
-    const payroll = await PayrollModel.findByPk(id, {
+    const idNum = parseInt(id, 10);
+    const payroll = await PayrollModel.findByPk(idNum, {
       include: [
         {
           model: UserModel,
@@ -72,8 +74,9 @@ export class DataController {
   // Obtener nóminas de un usuario específico
   getPayrollsByUser = asyncHandler(async (req: Request, res: Response): Promise<Response> => {
     const { userId } = req.params;
+    const userIdNum = parseInt(userId, 10);
     const payrolls = await PayrollModel.findAll({
-      where: { id_user: userId },
+      where: { id_user: userIdNum },
       include: [
         {
           model: CompanyModel,

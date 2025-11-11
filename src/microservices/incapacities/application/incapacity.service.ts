@@ -1,7 +1,6 @@
 import { Incapacity, IncapacityType, IncapacityStatus } from '../domain/incapacity.entity';
 import { IncapacityRepositoryInterface } from '../domain/ports/incapacity.repository.interface';
 import { CreateIncapacityRequest, UpdateIncapacityRequest } from './dto/incapacity.request';
-import { v4 as uuidv4 } from 'uuid';
 import { UserModel } from '../domain/model/user.model';
 import { CompanyModel } from '../domain/model/company.model';
 import { PayrollModel } from '../domain/model/payroll.model';
@@ -28,12 +27,11 @@ export class IncapacityService {
         throw new Error('La nómina no pertenece al usuario especificado');
       }
 
-      const incapacityId = uuidv4();
       const startDate = new Date(dto.start_date);
       const endDate = new Date(dto.end_date);
 
       const incapacity = new Incapacity(
-        incapacityId,
+        0, // Se asignará automáticamente por autoIncrement
         dto.id_user,
         dto.id_payroll,
         startDate,
@@ -63,9 +61,9 @@ export class IncapacityService {
     }
   }
 
-  async getIncapacitiesByUser(userId: string): Promise<Incapacity[]> {
+  async getIncapacitiesByUser(userId: number): Promise<Incapacity[]> {
     try {
-      if (!userId || userId.trim().length === 0) {
+      if (!userId || userId <= 0) {
         throw new Error('User ID is required');
       }
       return await this.incapacityRepository.findByUserId(userId);
@@ -77,9 +75,9 @@ export class IncapacityService {
     }
   }
 
-  async updateIncapacity(id: string, dto: UpdateIncapacityRequest): Promise<Incapacity> {
+  async updateIncapacity(id: number, dto: UpdateIncapacityRequest): Promise<Incapacity> {
     try {
-      if (!id || id.trim().length === 0) {
+      if (!id || id <= 0) {
         throw new Error('Incapacity ID is required');
       }
 

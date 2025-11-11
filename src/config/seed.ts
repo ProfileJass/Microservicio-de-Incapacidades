@@ -19,35 +19,30 @@ export const seedDatabase = async (): Promise<void> => {
     // Crear usuarios de prueba
     const users = [
       {
-        id_user: '550e8400-e29b-41d4-a716-446655440001',
         firstName: 'Juan',
         lastName: 'Pérez García',
         email: 'juan.perez@empresa.com',
         role: 'empleado',
       },
       {
-        id_user: '550e8400-e29b-41d4-a716-446655440002',
         firstName: 'María',
         lastName: 'González López',
         email: 'maria.gonzalez@empresa.com',
         role: 'empleado',
       },
       {
-        id_user: '550e8400-e29b-41d4-a716-446655440003',
         firstName: 'Carlos',
         lastName: 'Rodríguez Martínez',
         email: 'carlos.rodriguez@empresa.com',
         role: 'administrador',
       },
       {
-        id_user: '550e8400-e29b-41d4-a716-446655440004',
         firstName: 'Ana',
         lastName: 'Fernández Ruiz',
         email: 'ana.fernandez@empresa.com',
         role: 'empleado',
       },
       {
-        id_user: '550e8400-e29b-41d4-a716-446655440005',
         firstName: 'Luis',
         lastName: 'Martínez Sánchez',
         email: 'luis.martinez@empresa.com',
@@ -61,21 +56,18 @@ export const seedDatabase = async (): Promise<void> => {
     // Crear empresas de prueba
     const companies = [
       {
-        id_company: '660e8400-e29b-41d4-a716-446655440001',
         nameCompany: 'Tech Solutions S.A.S',
         NIT: '900123456-1',
         adressCompany: 'Calle 100 #15-20, Bogotá',
         phone: '3001234567',
       },
       {
-        id_company: '660e8400-e29b-41d4-a716-446655440002',
         nameCompany: 'Innovación Digital Ltda',
         NIT: '900234567-2',
         adressCompany: 'Carrera 50 #80-30, Medellín',
         phone: '3009876543',
       },
       {
-        id_company: '660e8400-e29b-41d4-a716-446655440003',
         nameCompany: 'Servicios Empresariales S.A.',
         NIT: '900345678-3',
         adressCompany: 'Avenida 7 Norte #30-50, Cali',
@@ -89,33 +81,28 @@ export const seedDatabase = async (): Promise<void> => {
     // Crear nóminas de prueba (vinculando usuarios con empresas)
     const payrolls = [
       {
-        id_payroll: '770e8400-e29b-41d4-a716-446655440001',
-        id_user: '550e8400-e29b-41d4-a716-446655440001', // Juan
-        id_company: '660e8400-e29b-41d4-a716-446655440001', // Tech Solutions
+        id_user: 1, // Juan
+        id_company: 1, // Tech Solutions
         status: 'active',
       },
       {
-        id_payroll: '770e8400-e29b-41d4-a716-446655440002',
-        id_user: '550e8400-e29b-41d4-a716-446655440002', // María
-        id_company: '660e8400-e29b-41d4-a716-446655440001', // Tech Solutions
+        id_user: 2, // María
+        id_company: 1, // Tech Solutions
         status: 'active',
       },
       {
-        id_payroll: '770e8400-e29b-41d4-a716-446655440003',
-        id_user: '550e8400-e29b-41d4-a716-446655440003', // Carlos
-        id_company: '660e8400-e29b-41d4-a716-446655440002', // Innovación Digital
+        id_user: 3, // Carlos
+        id_company: 2, // Innovación Digital
         status: 'active',
       },
       {
-        id_payroll: '770e8400-e29b-41d4-a716-446655440004',
-        id_user: '550e8400-e29b-41d4-a716-446655440004', // Ana
-        id_company: '660e8400-e29b-41d4-a716-446655440002', // Innovación Digital
+        id_user: 4, // Ana
+        id_company: 2, // Innovación Digital
         status: 'active',
       },
       {
-        id_payroll: '770e8400-e29b-41d4-a716-446655440005',
-        id_user: '550e8400-e29b-41d4-a716-446655440005', // Luis
-        id_company: '660e8400-e29b-41d4-a716-446655440003', // Servicios Empresariales
+        id_user: 5, // Luis
+        id_company: 3, // Servicios Empresariales
         status: 'active',
       },
     ];
@@ -123,19 +110,24 @@ export const seedDatabase = async (): Promise<void> => {
     await PayrollModel.bulkCreate(payrolls);
     console.log(`${payrolls.length} nóminas de prueba creadas`);
 
+    // Obtener los datos con IDs generados
+    const createdUsers = await UserModel.findAll();
+    const createdCompanies = await CompanyModel.findAll();
+    const createdPayrolls = await PayrollModel.findAll();
+
     console.log('\nUsuarios:');
-    users.forEach((user) => {
+    createdUsers.forEach((user) => {
       console.log(`  - ${user.firstName} ${user.lastName} (ID: ${user.id_user})`);
     });
     console.log('\nEmpresas:');
-    companies.forEach((company) => {
+    createdCompanies.forEach((company) => {
       console.log(`  - ${company.nameCompany} (ID: ${company.id_company})`);
     });
     console.log('\nNóminas:');
-    payrolls.forEach((payroll, index) => {
-      const user = users.find((u) => u.id_user === payroll.id_user);
-      const company = companies.find((c) => c.id_company === payroll.id_company);
-      console.log(`  - ${user?.firstName} en ${company?.nameCompany} (ID: ${payroll.id_payroll})`);
+    createdPayrolls.forEach((payroll) => {
+      const user = createdUsers.find((u) => u.id_user === payroll.id_user);
+      const company = createdCompanies.find((c) => c.id_company === payroll.id_company);
+      console.log(`  - ${user?.firstName} en ${company?.nameCompany} (ID Nómina: ${payroll.id_payroll})`);
     });
   } catch (error) {
     console.error('Error al realizar seed:', error);

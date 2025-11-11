@@ -18,13 +18,15 @@ export class IncapacityController {
 
   getIncapacitiesByUser = asyncHandler(async (req: Request, res: Response): Promise<Response> => {
     const { userId } = req.params;
-    const incapacities = await this.incapacityService.getIncapacitiesByUser(userId);
+    const userIdNum = parseInt(userId, 10);
+    const incapacities = await this.incapacityService.getIncapacitiesByUser(userIdNum);
     return ResponseHandler.success(res, incapacities, `Se encontraron ${incapacities.length} incapacidades para el usuario`);
   });
 
   updateIncapacity = asyncHandler(async (req: Request, res: Response): Promise<Response> => {
     const { id } = req.params;
-    const incapacity = await this.incapacityService.updateIncapacity(id, req.body);
+    const idNum = parseInt(id, 10);
+    const incapacity = await this.incapacityService.updateIncapacity(idNum, req.body);
     return ResponseHandler.success(res, incapacity, 'Incapacidad actualizada exitosamente');
   });
 }

@@ -4,9 +4,9 @@ import { UserModel } from './user.model';
 import { PayrollModel } from './payroll.model';
 
 export class IncapacityModel extends Model {
-  declare id_incapacity: string;
-  declare id_user: string;
-  declare id_payroll: string;
+  declare id_incapacity: number;
+  declare id_user: number;
+  declare id_payroll: number;
   declare start_date: Date;
   declare end_date: Date;
   declare type: string;
@@ -17,12 +17,13 @@ export class IncapacityModel extends Model {
 IncapacityModel.init(
   {
     id_incapacity: {
-      type: DataTypes.UUID,
+      type: DataTypes.INTEGER,
       primaryKey: true,
+      autoIncrement: true,
       allowNull: false,
     },
     id_user: {
-      type: DataTypes.UUID,
+      type: DataTypes.INTEGER,
       allowNull: false,
       references: {
         model: UserModel,
@@ -30,7 +31,7 @@ IncapacityModel.init(
       },
     },
     id_payroll: {
-      type: DataTypes.UUID,
+      type: DataTypes.INTEGER,
       allowNull: false,
       references: {
         model: PayrollModel,

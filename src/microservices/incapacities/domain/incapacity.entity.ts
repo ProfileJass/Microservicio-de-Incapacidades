@@ -13,9 +13,9 @@ export enum IncapacityStatus {
 
 export class Incapacity {
   constructor(
-    public readonly id_incapacity: string,
-    public readonly id_user: string,
-    public readonly id_payroll: string,
+    public readonly id_incapacity: number,
+    public readonly id_user: number,
+    public readonly id_payroll: number,
     public readonly start_date: Date,
     public readonly end_date: Date,
     public readonly type: IncapacityType,
@@ -26,10 +26,10 @@ export class Incapacity {
   }
 
   private validate(): void {
-    if (!this.id_user || this.id_user.trim().length === 0) {
+    if (!this.id_user || this.id_user <= 0) {
       throw new Error('User ID is required');
     }
-    if (!this.id_payroll || this.id_payroll.trim().length === 0) {
+    if (!this.id_payroll || this.id_payroll <= 0) {
       throw new Error('Payroll ID is required');
     }
     if (!(this.start_date instanceof Date) || isNaN(this.start_date.getTime())) {

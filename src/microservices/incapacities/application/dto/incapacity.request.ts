@@ -1,8 +1,8 @@
 import { IncapacityType } from '../../domain/incapacity.entity';
 
 export interface CreateIncapacityRequest {
-  id_user: string;
-  id_payroll: string;
+  id_user: number;
+  id_payroll: number;
   start_date: string;
   end_date: string;
   type: IncapacityType;

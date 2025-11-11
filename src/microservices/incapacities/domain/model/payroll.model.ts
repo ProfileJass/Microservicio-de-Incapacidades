@@ -4,21 +4,22 @@ import { UserModel } from './user.model';
 import { CompanyModel } from './company.model';
 
 export class PayrollModel extends Model {
-  declare id_payroll: string;
-  declare id_user: string;
-  declare id_company: string;
+  declare id_payroll: number;
+  declare id_user: number;
+  declare id_company: number;
   declare status: string;
 }
 
 PayrollModel.init(
   {
     id_payroll: {
-      type: DataTypes.UUID,
+      type: DataTypes.INTEGER,
       primaryKey: true,
+      autoIncrement: true,
       allowNull: false,
     },
     id_user: {
-      type: DataTypes.UUID,
+      type: DataTypes.INTEGER,
       allowNull: false,
       references: {
         model: UserModel,
@@ -26,7 +27,7 @@ PayrollModel.init(
       },
     },
     id_company: {
-      type: DataTypes.UUID,
+      type: DataTypes.INTEGER,
       allowNull: false,
       references: {
         model: CompanyModel,

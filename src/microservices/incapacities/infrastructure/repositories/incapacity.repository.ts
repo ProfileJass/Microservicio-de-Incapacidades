@@ -8,29 +8,7 @@ import { CompanyModel } from '../../domain/model/company.model';
 export class IncapacityRepository implements IncapacityRepositoryInterface {
   async create(incapacity: Incapacity): Promise<Incapacity> {
     try {
-      await UserModel.findOrCreate({
-        where: { id_user: incapacity.id_user },
-        defaults: {
-          id_user: incapacity.id_user,
-          firstName: '',
-          lastName: '',
-          email: '',
-          role: '',
-        },
-      });
-
-      const [payrollInstance] = await PayrollModel.findOrCreate({
-        where: { id_payroll: incapacity.id_payroll },
-        defaults: {
-          id_payroll: incapacity.id_payroll,
-          id_user: incapacity.id_user,
-          id_company: '',
-          status: 'active',
-        },
-      });
-
       const createdIncapacity = await IncapacityModel.create({
-        id_incapacity: incapacity.id_incapacity,
         id_user: incapacity.id_user,
         id_payroll: incapacity.id_payroll,
         start_date: incapacity.start_date,
@@ -73,7 +51,7 @@ export class IncapacityRepository implements IncapacityRepositoryInterface {
     }
   }
 
-  async findById(id: string): Promise<Incapacity | null> {
+  async findById(id: number): Promise<Incapacity | null> {
     try {
       const incapacity = await IncapacityModel.findByPk(id, {
         include: [
@@ -104,7 +82,7 @@ export class IncapacityRepository implements IncapacityRepositoryInterface {
     }
   }
 
-  async findByUserId(userId: string): Promise<Incapacity[]> {
+  async findByUserId(userId: number): Promise<Incapacity[]> {
     try {
       const incapacities = await IncapacityModel.findAll({
         where: { id_user: userId },
@@ -132,7 +110,7 @@ export class IncapacityRepository implements IncapacityRepositoryInterface {
     }
   }
 
-  async update(id: string, updateData: Record<string, any>): Promise<Incapacity | null> {
+  async update(id: number, updateData: Record<string, any>): Promise<Incapacity | null> {
     try {
       const incapacity = await IncapacityModel.findByPk(id);
       
@@ -167,7 +145,7 @@ export class IncapacityRepository implements IncapacityRepositoryInterface {
     }
   }
 
-  async delete(id: string): Promise<boolean> {
+  async delete(id: number): Promise<boolean> {
     try {
       const result = await IncapacityModel.destroy({
         where: { id_incapacity: id },
