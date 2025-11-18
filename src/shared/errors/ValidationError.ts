@@ -1,9 +1,7 @@
-export class ValidationError extends Error {
-  public readonly statusCode: number = 400;
+import { AppError } from './AppError';
 
-  constructor(message: string) {
-    super(message);
-    this.name = 'ValidationError';
-    Object.setPrototypeOf(this, ValidationError.prototype);
+export class ValidationError extends AppError {
+  constructor(message: string = 'Validation error') {
+    super(message, 400);
   }
 }

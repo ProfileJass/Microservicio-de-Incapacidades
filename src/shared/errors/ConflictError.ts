@@ -1,9 +1,7 @@
-export class ConflictError extends Error {
-  public readonly statusCode: number = 409;
+import { AppError } from './AppError';
 
-  constructor(message: string) {
-    super(message);
-    this.name = 'ConflictError';
-    Object.setPrototypeOf(this, ConflictError.prototype);
+export class ConflictError extends AppError {
+  constructor(message: string = 'Conflict') {
+    super(message, 409);
   }
 }

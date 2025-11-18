@@ -1,9 +1,13 @@
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
+import { UnauthorizedError } from '../errors/UnauthorizedError';
+import { ForbiddenError } from '../errors/ForbiddenError';
 
 interface JwtPayload {
-  userId: string;
-  role: 'admin' | 'employee';
+  id: number;
+  role: string;
+  iat?: number;
+  exp?: number;
 }
 
 declare global {
@@ -14,72 +18,73 @@ declare global {
   }
 }
 
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
+const JWT_SECRET = process.env.JWT_SECRET;
 
-/**
- * Middleware para autenticar el token JWT
- */
+if (!JWT_SECRET) {
+  throw new Error('JWT_SECRET is not defined in environment variables');
+}
+
 export const authenticateToken = (req: Request, res: Response, next: NextFunction) => {
-  const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1];
-
-  if (!token) {
-    return res.status(401).json({ 
-      success: false,
-      message: 'Token no proporcionado' 
-    });
-  }
-
   try {
+    const authHeader = req.headers['authorization'];
+    
+    if (!authHeader) {
+      throw new UnauthorizedError('Token no proporcionado');
+    }
+
+    const token = authHeader.startsWith('Bearer ') 
+      ? authHeader.substring(7) 
+      : authHeader;
+
+    if (!token) {
+      throw new UnauthorizedError('Formato de token inválido');
+    }
+
     const decoded = jwt.verify(token, JWT_SECRET) as JwtPayload;
     req.user = decoded;
     next();
   } catch (error) {
-    return res.status(403).json({ 
+    if (error instanceof jwt.TokenExpiredError) {
+      return res.status(401).json({ 
+        success: false,
+        message: 'Token expirado' 
+      });
+    }
+    if (error instanceof jwt.JsonWebTokenError) {
+      return res.status(401).json({ 
+        success: false,
+        message: 'Token inválido' 
+      });
+    }
+    if (error instanceof UnauthorizedError) {
+      return res.status(401).json({ 
+        success: false,
+        message: error.message 
+      });
+    }
+    return res.status(500).json({ 
       success: false,
-      message: 'Token inválido o expirado' 
+      message: 'Error en autenticación' 
     });
   }
 };
 
-/**
- * Middleware para autorizar solo administradores
- */
 export const authorizeAdmin = (req: Request, res: Response, next: NextFunction) => {
   if (!req.user) {
-    return res.status(401).json({ 
-      success: false,
-      message: 'Usuario no autenticado' 
-    });
+    throw new UnauthorizedError('Usuario no autenticado');
   }
 
   if (req.user.role !== 'admin') {
-    return res.status(403).json({ 
-      success: false,
-      message: 'Acceso denegado. Solo administradores pueden acceder a este recurso' 
-    });
+    throw new ForbiddenError('Acceso denegado. Solo administradores');
   }
   
   next();
 };
 
-/**
- * Middleware para autorizar solo empleados
- */
 export const authorizeEmployee = (req: Request, res: Response, next: NextFunction) => {
   if (!req.user) {
-    return res.status(401).json({ 
-      success: false,
-      message: 'Usuario no autenticado' 
-    });
+    throw new UnauthorizedError('Usuario no autenticado');
   }
 
-  if (req.user.role !== 'employee') {
-    return res.status(403).json({ 
-      success: false,
-      message: 'Acceso denegado. Solo empleados pueden acceder a este recurso' 
-    });
-  }
-  
   next();
 };
