@@ -74,57 +74,11 @@ export class IncapacityService {
 
   async updateIncapacity(id: number, dto: UpdateIncapacityRequest): Promise<Incapacity> {
     try {
-      if (!id || id <= 0) {
-        throw new Error('Incapacity ID is required');
-      }
+      this.validateIncapacityId(id);
 
-      const existingIncapacity = await this.incapacityRepository.findById(id);
-      if (!existingIncapacity) {
-        throw new Error('Incapacity not found');
-      }
-
-      const updateData: Record<string, any> = {};
-
-      if (dto.start_date) {
-        updateData.start_date = new Date(dto.start_date);
-      }
-
-      if (dto.end_date) {
-        updateData.end_date = new Date(dto.end_date);
-      }
-
-      if (dto.type) {
-        if (!Object.values(IncapacityType).includes(dto.type)) {
-          throw new Error('Invalid incapacity type');
-        }
-        updateData.type = dto.type;
-      }
-
-      if (dto.status) {
-        const statusValue = dto.status as IncapacityStatus;
-        if (!Object.values(IncapacityStatus).includes(statusValue)) {
-          throw new Error('Invalid incapacity status');
-        }
-        updateData.status = statusValue;
-      }
-
-      if (dto.observacion !== undefined) {
-        updateData.observacion = dto.observacion;
-      }
-
-      if (updateData.start_date && updateData.end_date) {
-        if (updateData.end_date < updateData.start_date) {
-          throw new Error('End date must be after start date');
-        }
-      } else if (updateData.start_date && existingIncapacity.end_date) {
-        if (existingIncapacity.end_date < updateData.start_date) {
-          throw new Error('End date must be after start date');
-        }
-      } else if (updateData.end_date && existingIncapacity.start_date) {
-        if (updateData.end_date < existingIncapacity.start_date) {
-          throw new Error('End date must be after start date');
-        }
-      }
+      const existingIncapacity = await this.findExistingIncapacity(id);
+      const updateData = this.buildUpdateData(dto);
+      this.validateDateConsistency(updateData, existingIncapacity);
 
       const updatedIncapacity = await this.incapacityRepository.update(id, updateData);
       if (!updatedIncapacity) {
@@ -137,6 +91,71 @@ export class IncapacityService {
         throw new Error(`Failed to update incapacity: ${error.message}`);
       }
       throw new Error('Failed to update incapacity: Unknown error');
+    }
+  }
+
+  private validateIncapacityId(id: number): void {
+    if (!id || id <= 0) {
+      throw new Error('Incapacity ID is required');
+    }
+  }
+
+  private async findExistingIncapacity(id: number): Promise<Incapacity> {
+    const existingIncapacity = await this.incapacityRepository.findById(id);
+    if (!existingIncapacity) {
+      throw new Error('Incapacity not found');
+    }
+    return existingIncapacity;
+  }
+
+  private buildUpdateData(dto: UpdateIncapacityRequest): Record<string, any> {
+    const updateData: Record<string, any> = {};
+
+    if (dto.start_date) {
+      updateData.start_date = new Date(dto.start_date);
+    }
+
+    if (dto.end_date) {
+      updateData.end_date = new Date(dto.end_date);
+    }
+
+    if (dto.type) {
+      this.validateIncapacityType(dto.type);
+      updateData.type = dto.type;
+    }
+
+    if (dto.status) {
+      const statusValue = dto.status as IncapacityStatus;
+      this.validateIncapacityStatus(statusValue);
+      updateData.status = statusValue;
+    }
+
+    if (dto.observacion !== undefined) {
+      updateData.observacion = dto.observacion;
+    }
+
+    return updateData;
+  }
+
+  private validateIncapacityType(type: IncapacityType): void {
+    if (!Object.values(IncapacityType).includes(type)) {
+      throw new Error('Invalid incapacity type');
+    }
+  }
+
+  private validateIncapacityStatus(status: IncapacityStatus): void {
+    const statusValue = status as IncapacityStatus;
+    if (!Object.values(IncapacityStatus).includes(statusValue)) {
+      throw new Error('Invalid incapacity status');
+    }
+  }
+
+  private validateDateConsistency(updateData: Record<string, any>, existingIncapacity: Incapacity): void {
+    const newStartDate = updateData.start_date || existingIncapacity.start_date;
+    const newEndDate = updateData.end_date || existingIncapacity.end_date;
+
+    if (newEndDate < newStartDate) {
+      throw new Error('End date must be after start date');
     }
   }
 }
