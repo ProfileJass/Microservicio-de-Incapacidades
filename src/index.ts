@@ -1,4 +1,5 @@
 import './shared/config/env.config'; // Valida variables de entorno primero
+import './domain/model'; // Carga los modelos antes de conectar
 import app from './app';
 import { connectDB } from './config/database';
 import { config } from './config/config';

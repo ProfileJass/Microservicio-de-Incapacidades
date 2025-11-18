@@ -1,9 +1,5 @@
 import { Sequelize } from 'sequelize';
 import { config } from './config';
-import { UserModel } from '../domain/model/user.model';
-import { CompanyModel } from '../domain/model/company.model';
-import { PayrollModel } from '../domain/model/payroll.model';
-import { IncapacityModel } from '../domain/model/incapacity.model';
 
 export const sequelize = new Sequelize({
   host: config.database.host,
@@ -24,12 +20,9 @@ export const sequelize = new Sequelize({
 export const connectDB = async (): Promise<void> => {
   try {
     await sequelize.authenticate();
-  
-    if (config.nodeEnv === 'development') {
-      await IncapacityModel.sync({ alter: true });
-    }
+    console.log('✅ Database connection established successfully');
   } catch (error) {
-    console.error('Error conectando a la base de datos:', error);
+    console.error('❌ Error connecting to database:', error);
     throw error;
   }
 };
