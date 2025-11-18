@@ -61,7 +61,7 @@ export class IncapacityService {
 
   async getIncapacitiesByUser(userId: number): Promise<IncapacityResponse[]> {
     if (!userId || userId <= 0) {
-      throw new ValidationError('User ID is required');
+      throw new ValidationError('ID de usuario es requerido');
     }
     const incapacities = await this.incapacityRepository.findByUserId(userId);
     return incapacities.map(incapacity => this.mapToResponse(incapacity));
@@ -76,7 +76,7 @@ export class IncapacityService {
 
     const updatedIncapacity = await this.incapacityRepository.update(id, updateData);
     if (!updatedIncapacity) {
-      throw new Error('Failed to update incapacity');
+      throw new Error('Error al actualizar la incapacidad');
     }
 
     return this.mapToResponse(updatedIncapacity);
@@ -84,14 +84,14 @@ export class IncapacityService {
 
   private validateIncapacityId(id: number): void {
     if (!id || id <= 0) {
-      throw new ValidationError('Incapacity ID is required');
+      throw new ValidationError('ID de incapacidad es requerido');
     }
   }
 
   private async findExistingIncapacity(id: number): Promise<Incapacity> {
     const existingIncapacity = await this.incapacityRepository.findById(id);
     if (!existingIncapacity) {
-      throw new NotFoundError('Incapacity not found');
+      throw new NotFoundError('Incapacidad no encontrada');
     }
     return existingIncapacity;
   }
@@ -127,14 +127,14 @@ export class IncapacityService {
 
   private validateIncapacityType(type: IncapacityType): void {
     if (!Object.values(IncapacityType).includes(type)) {
-      throw new ValidationError('Invalid incapacity type');
+      throw new ValidationError('Tipo de incapacidad inválido');
     }
   }
 
   private validateIncapacityStatus(status: IncapacityStatus): void {
     const statusValue = status as IncapacityStatus;
     if (!Object.values(IncapacityStatus).includes(statusValue)) {
-      throw new ValidationError('Invalid incapacity status');
+      throw new ValidationError('Estado de incapacidad inválido');
     }
   }
 
@@ -143,13 +143,13 @@ export class IncapacityService {
     const newEndDate = updateData.end_date || existingIncapacity.end_date;
 
     if (newEndDate < newStartDate) {
-      throw new ValidationError('End date must be after start date');
+      throw new ValidationError('La fecha final debe ser posterior a la fecha de inicio');
     }
   }
 
   private mapToResponse(incapacity: Incapacity): IncapacityResponse {
     if (!incapacity.user || !incapacity.payroll) {
-      throw new Error('User and payroll data are required to create response');
+      throw new Error('Se requieren datos de usuario y nómina para crear la respuesta');
     }
 
     return {

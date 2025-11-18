@@ -3,9 +3,9 @@ import { sequelize } from '../../config/database';
 
 export class CompanyModel extends Model {
   declare id_company: number;
-  declare nameCompany: string;
-  declare NIT: string;
-  declare adressCompany: string;
+  declare name: string;
+  declare nit: string;
+  declare address: string;
   declare phone: string;
 }
 
@@ -17,26 +17,27 @@ CompanyModel.init(
       autoIncrement: true,
       allowNull: false,
     },
-    nameCompany: {
+    name: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    NIT: {
+    nit: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    adressCompany: {
+    address: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     phone: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
   },
   {
     sequelize,
     tableName: 'companies',
-    timestamps: false,
+    timestamps: true,
+    underscored: true,
   }
 );

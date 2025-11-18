@@ -21,15 +21,15 @@ app.get('/health', async (req, res) => {
     await sequelize.authenticate();
     res.status(200).json({ 
       status: 'ok', 
-      message: 'IncapacitiesService running',
-      database: 'connected',
+      message: 'Servicio de incapacidades en ejecución',
+      database: 'conectada',
       timestamp: new Date().toISOString()
     });
   } catch (error) {
     res.status(503).json({ 
       status: 'error', 
-      message: 'IncapacitiesService unhealthy',
-      database: 'disconnected',
+      message: 'Servicio de incapacidades no disponible',
+      database: 'desconectada',
       timestamp: new Date().toISOString()
     });
   }
