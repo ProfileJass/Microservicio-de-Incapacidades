@@ -5,9 +5,9 @@ import { IncapacityResponse } from './dto/incapacity.response';
 import { UserModel } from '../domain/model/user.model';
 import { CompanyModel } from '../domain/model/company.model';
 import { PayrollModel } from '../domain/model/payroll.model';
-import { ValidationError } from '../../../shared/errors/ValidationError';
-import { NotFoundError } from '../../../shared/errors/NotFoundError';
-import { ConflictError } from '../../../shared/errors/ConflictError';
+import { ValidationError } from '../shared/errors/ValidationError';
+import { NotFoundError } from '../shared/errors/NotFoundError';
+import { ConflictError } from '../shared/errors/ConflictError';
 
 export class IncapacityService {
   constructor(private readonly incapacityRepository: IncapacityRepositoryInterface) {}

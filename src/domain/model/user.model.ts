@@ -1,42 +1,42 @@
 import { Model, DataTypes } from 'sequelize';
-import { sequelize } from '../../../../config/database';
+import { sequelize } from '../../config/database';
 
-export class CompanyModel extends Model {
-  declare id_company: number;
-  declare nameCompany: string;
-  declare NIT: string;
-  declare adressCompany: string;
-  declare phone: string;
+export class UserModel extends Model {
+  declare id_user: number;
+  declare firstName: string;
+  declare lastName: string;
+  declare email: string;
+  declare role: string;
 }
 
-CompanyModel.init(
+UserModel.init(
   {
-    id_company: {
+    id_user: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
       allowNull: false,
     },
-    nameCompany: {
+    firstName: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    NIT: {
+    lastName: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    adressCompany: {
+    email: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    phone: {
+    role: {
       type: DataTypes.STRING,
       allowNull: false,
     },
   },
   {
     sequelize,
-    tableName: 'companies',
+    tableName: 'users',
     timestamps: false,
   }
 );

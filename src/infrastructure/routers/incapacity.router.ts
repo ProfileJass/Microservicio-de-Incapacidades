@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { IncapacityController } from '../controllers/incapacity.controller';
 import { IncapacityService } from '../../application/incapacity.service';
 import { IncapacityRepository } from '../repositories/incapacity.repository';
-import { authenticateToken, authorizeAdmin, authorizeEmployee } from '../../../../shared/middleware/auth.middleware';
+import { authenticateToken, authorizeAdmin, authorizeEmployee } from '../../shared/middleware/auth.middleware';
 
 const incapacityRepository = new IncapacityRepository();
 const incapacityService = new IncapacityService(incapacityRepository);

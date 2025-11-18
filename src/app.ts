@@ -2,8 +2,8 @@ import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
-import incapacityRouter from './microservices/incapacities/infrastructure/routers/incapacity.router';
-import dataRouter from './microservices/incapacities/infrastructure/routers/data.router';
+import incapacityRouter from './infrastructure/routers/incapacity.router';
+import dataRouter from './infrastructure/routers/data.router';
 import authRouter from './shared/routers/auth.router';
 import { errorHandler, notFoundHandler } from './shared/middleware/error-handler.middleware';
 

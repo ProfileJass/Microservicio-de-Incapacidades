@@ -1,6 +1,6 @@
-import { UserModel } from '../microservices/incapacities/domain/model/user.model';
-import { CompanyModel } from '../microservices/incapacities/domain/model/company.model';
-import { PayrollModel } from '../microservices/incapacities/domain/model/payroll.model';
+import { UserModel } from '../domain/model/user.model';
+import { CompanyModel } from '../domain/model/company.model';
+import { PayrollModel } from '../domain/model/payroll.model';
 import { sequelize } from './database';
 
 export const seedDatabase = async (): Promise<void> => {
@@ -82,17 +82,17 @@ export const seedDatabase = async (): Promise<void> => {
     const createdPayrolls = await PayrollModel.findAll();
 
     console.log('\nUsuarios:');
-    createdUsers.forEach((user) => {
+    createdUsers.forEach((user: UserModel) => {
       console.log(`  - ${user.firstName} ${user.lastName} (ID: ${user.id_user})`);
     });
     console.log('\nEmpresas:');
-    createdCompanies.forEach((company) => {
+    createdCompanies.forEach((company: CompanyModel) => {
       console.log(`  - ${company.nameCompany} (ID: ${company.id_company})`);
     });
     console.log('\nNóminas:');
-    createdPayrolls.forEach((payroll) => {
-      const user = createdUsers.find((u) => u.id_user === payroll.id_user);
-      const company = createdCompanies.find((c) => c.id_company === payroll.id_company);
+    createdPayrolls.forEach((payroll: PayrollModel) => {
+      const user = createdUsers.find((u: UserModel) => u.id_user === payroll.id_user);
+      const company = createdCompanies.find((c: CompanyModel) => c.id_company === payroll.id_company);
       console.log(`  - ${user?.firstName} en ${company?.nameCompany} (ID Nómina: ${payroll.id_payroll})`);
     });
   } catch (error) {

@@ -2,8 +2,8 @@ import { Request, Response } from 'express';
 import { UserModel } from '../../domain/model/user.model';
 import { PayrollModel } from '../../domain/model/payroll.model';
 import { CompanyModel } from '../../domain/model/company.model';
-import { asyncHandler } from '../../../../shared/middleware/error-handler.middleware';
-import ResponseHandler from '../../../../shared/utils/response-handler.util';
+import { asyncHandler } from '../../shared/middleware/error-handler.middleware';
+import ResponseHandler from '../../shared/utils/response-handler.util';
 
 export class DataController {
   getAllUsers = asyncHandler(async (req: Request, res: Response): Promise<Response> => {

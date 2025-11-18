@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { IncapacityService } from '../../application/incapacity.service';
-import { asyncHandler } from '../../../../shared/middleware/error-handler.middleware';
-import ResponseHandler from '../../../../shared/utils/response-handler.util';
+import { asyncHandler } from '../../shared/middleware/error-handler.middleware';
+import ResponseHandler from '../../shared/utils/response-handler.util';
 
 export class IncapacityController {
   constructor(private readonly incapacityService: IncapacityService) {}

@@ -1,9 +1,9 @@
 import { Sequelize } from 'sequelize';
 import { config } from './config';
-import { UserModel } from '../microservices/incapacities/domain/model/user.model';
-import { CompanyModel } from '../microservices/incapacities/domain/model/company.model';
-import { PayrollModel } from '../microservices/incapacities/domain/model/payroll.model';
-import { IncapacityModel } from '../microservices/incapacities/domain/model/incapacity.model';
+import { UserModel } from '../domain/model/user.model';
+import { CompanyModel } from '../domain/model/company.model';
+import { PayrollModel } from '../domain/model/payroll.model';
+import { IncapacityModel } from '../domain/model/incapacity.model';
 
 export const sequelize = new Sequelize({
   host: config.database.host,
