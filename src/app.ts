@@ -4,6 +4,7 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 import incapacityRouter from './microservices/incapacities/infrastructure/routers/incapacity.router';
 import dataRouter from './microservices/incapacities/infrastructure/routers/data.router';
+import authRouter from './shared/routers/auth.router';
 import { errorHandler, notFoundHandler } from './shared/middleware/error-handler.middleware';
 
 const app = express();
@@ -18,6 +19,7 @@ app.get('/health', (req, res) => {
   res.status(200).json({ status: 'ok', message: 'Service is running' });
 });
 
+app.use('/api/auth', authRouter);
 app.use('/api/incapacities', incapacityRouter);
 app.use('/api/data', dataRouter);
 
