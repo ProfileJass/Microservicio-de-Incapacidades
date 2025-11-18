@@ -74,7 +74,7 @@ export const authorizeAdmin = (req: Request, res: Response, next: NextFunction) 
     throw new UnauthorizedError('Usuario no autenticado');
   }
 
-  if (req.user.role !== 'admin') {
+  if (req.user.role.toUpperCase() !== 'ADMIN') {
     throw new ForbiddenError('Acceso denegado. Solo administradores');
   }
   
