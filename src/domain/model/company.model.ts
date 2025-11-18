@@ -1,7 +1,17 @@
-import { Model, DataTypes } from 'sequelize';
+import { Model, DataTypes, Optional } from 'sequelize';
 import { sequelize } from '../../config/database';
 
-export class CompanyModel extends Model {
+interface CompanyAttributes {
+  id_company: number;
+  name: string;
+  nit: string;
+  address: string;
+  phone: string;
+}
+
+interface CompanyCreationAttributes extends Optional<CompanyAttributes, 'id_company'> {}
+
+export class CompanyModel extends Model<CompanyAttributes, CompanyCreationAttributes> implements CompanyAttributes {
   declare id_company: number;
   declare name: string;
   declare nit: string;
