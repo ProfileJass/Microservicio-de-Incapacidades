@@ -6,19 +6,11 @@ import { sequelize } from './database';
 export const seedDatabase = async (): Promise<void> => {
   try {
 
-    // Ya no es necesario sincronizar ya que las tablas están creadas en init-db.sql
-    // await sequelize.sync({ force: false });
-
-    // Los usuarios se crean desde el microservicio de usuarios
-    // Solo verificamos que existan datos
     const userCount = await UserModel.count();
     if (userCount === 0) {
       console.log('No hay usuarios en la base de datos. Crea usuarios primero desde el microservicio de usuarios.');
       return;
     }
-
-    // Omitir creación de usuarios - se manejan desde el microservicio de usuarios
-    // await UserModel.bulkCreate(users);
 
     console.log(`${userCount} usuarios existentes en la base de datos`);
 
@@ -46,40 +38,8 @@ export const seedDatabase = async (): Promise<void> => {
     await CompanyModel.bulkCreate(companies);
     console.log(` ${companies.length} empresas de prueba creadas`);
 
-    const payrolls = [
-      {
-        id_user: 1, // Juan
-        id_company: 1, // Tech Solutions
-        status: 'active',
-      },
-      {
-        id_user: 2, // María
-        id_company: 1, // Tech Solutions
-        status: 'active',
-      },
-      {
-        id_user: 3, // Carlos
-        id_company: 2, // Innovación Digital
-        status: 'active',
-      },
-      {
-        id_user: 4, // Ana
-        id_company: 2, // Innovación Digital
-        status: 'active',
-      },
-      {
-        id_user: 5, // Luis
-        id_company: 3, // Servicios Empresariales
-        status: 'active',
-      },
-    ];
-
-    await PayrollModel.bulkCreate(payrolls);
-    console.log(`${payrolls.length} nóminas de prueba creadas`);
-
     const createdUsers = await UserModel.findAll();
     const createdCompanies = await CompanyModel.findAll();
-    const createdPayrolls = await PayrollModel.findAll();
 
     console.log('\nUsuarios:');
     createdUsers.forEach((user: UserModel) => {
@@ -88,12 +48,6 @@ export const seedDatabase = async (): Promise<void> => {
     console.log('\nEmpresas:');
     createdCompanies.forEach((company: CompanyModel) => {
       console.log(`  - ${company.nameCompany} (ID: ${company.id_company})`);
-    });
-    console.log('\nNóminas:');
-    createdPayrolls.forEach((payroll: PayrollModel) => {
-      const user = createdUsers.find((u: UserModel) => u.id_user === payroll.id_user);
-      const company = createdCompanies.find((c: CompanyModel) => c.id_company === payroll.id_company);
-      console.log(`  - ${user?.firstName} en ${company?.nameCompany} (ID Nómina: ${payroll.id_payroll})`);
     });
   } catch (error) {
     console.error('Error al realizar seed:', error);

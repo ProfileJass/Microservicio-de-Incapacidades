@@ -25,7 +25,6 @@ export const connectDB = async (): Promise<void> => {
   try {
     await sequelize.authenticate();
     
-    // Solo sincronizar en desarrollo, en producción las tablas ya existen
     if (config.nodeEnv === 'development') {
       await sequelize.sync({ alter: true });
     }

@@ -18,7 +18,6 @@ export class IncapacityRepository implements IncapacityRepositoryInterface {
         observacion: incapacity.observacion,
       });
 
-      // Recargar la incapacidad con las relaciones incluidas
       const incapacityWithRelations = await IncapacityModel.findByPk(createdIncapacity.id_incapacity, {
         include: [
           {

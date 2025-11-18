@@ -30,7 +30,6 @@ export class IncapacityService {
     const startDate = new Date(dto.start_date);
     const endDate = new Date(dto.end_date);
 
-    // Validar que no exista una incapacidad con la misma fecha de inicio para este usuario
     const existingIncapacity = await this.incapacityRepository.findByUserIdAndStartDate(
       dto.id_user,
       startDate
@@ -41,7 +40,7 @@ export class IncapacityService {
     }
 
     const incapacity = new Incapacity(
-      0, // Se asignará automáticamente por autoIncrement
+      0,
       dto.id_user,
       dto.id_payroll,
       startDate,
