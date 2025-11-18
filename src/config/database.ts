@@ -24,11 +24,12 @@ export const sequelize = new Sequelize({
 export const connectDB = async (): Promise<void> => {
   try {
     await sequelize.authenticate();
-    
+  
     if (config.nodeEnv === 'development') {
-      await sequelize.sync({ alter: true });
+      await IncapacityModel.sync({ alter: true });
     }
   } catch (error) {
+    console.error('Error conectando a la base de datos:', error);
     throw error;
   }
 };
