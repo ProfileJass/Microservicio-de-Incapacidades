@@ -10,11 +10,9 @@ const incapacityController = new IncapacityController(incapacityService);
 
 const router = Router();
 
-// Endpoints para empleados - Radicar incapacidad y obtener por usuario
 router.post('/create', authenticateToken, authorizeEmployee, incapacityController.createIncapacity);
 router.get('/getByUser/:userId', authenticateToken, authorizeEmployee, incapacityController.getIncapacitiesByUser);
 
-// Endpoints para administradores - Obtener todas y actualizar
 router.get('/getAll', authenticateToken, authorizeAdmin, incapacityController.getAllIncapacities);
 router.put('/update/:id', authenticateToken, authorizeAdmin, incapacityController.updateIncapacity);
 

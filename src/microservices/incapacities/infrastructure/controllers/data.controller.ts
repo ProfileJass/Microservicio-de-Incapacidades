@@ -6,13 +6,11 @@ import { asyncHandler } from '../../../../shared/middleware/error-handler.middle
 import ResponseHandler from '../../../../shared/utils/response-handler.util';
 
 export class DataController {
-  // Obtener todos los usuarios
   getAllUsers = asyncHandler(async (req: Request, res: Response): Promise<Response> => {
     const users = await UserModel.findAll();
     return ResponseHandler.success(res, users, `Se encontraron ${users.length} usuarios`);
   });
 
-  // Obtener un usuario por ID
   getUserById = asyncHandler(async (req: Request, res: Response): Promise<Response> => {
     const { id } = req.params;
     const idNum = parseInt(id, 10);
@@ -25,7 +23,6 @@ export class DataController {
     return ResponseHandler.success(res, user, 'Usuario encontrado');
   });
 
-  // Obtener todas las nóminas con información de usuario y empresa
   getAllPayrolls = asyncHandler(async (req: Request, res: Response): Promise<Response> => {
     const payrolls = await PayrollModel.findAll({
       include: [
@@ -45,7 +42,6 @@ export class DataController {
     return ResponseHandler.success(res, payrolls, `Se encontraron ${payrolls.length} nóminas`);
   });
 
-  // Obtener una nómina por ID
   getPayrollById = asyncHandler(async (req: Request, res: Response): Promise<Response> => {
     const { id } = req.params;
     const idNum = parseInt(id, 10);
@@ -71,7 +67,6 @@ export class DataController {
     return ResponseHandler.success(res, payroll, 'Nómina encontrada');
   });
 
-  // Obtener nóminas de un usuario específico
   getPayrollsByUser = asyncHandler(async (req: Request, res: Response): Promise<Response> => {
     const { userId } = req.params;
     const userIdNum = parseInt(userId, 10);
@@ -89,7 +84,6 @@ export class DataController {
     return ResponseHandler.success(res, payrolls, `Se encontraron ${payrolls.length} nóminas para el usuario`);
   });
 
-  // Obtener todas las empresas
   getAllCompanies = asyncHandler(async (req: Request, res: Response): Promise<Response> => {
     const companies = await CompanyModel.findAll();
     return ResponseHandler.success(res, companies, `Se encontraron ${companies.length} empresas`);

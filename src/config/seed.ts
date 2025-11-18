@@ -6,17 +6,14 @@ import { sequelize } from './database';
 export const seedDatabase = async (): Promise<void> => {
   try {
 
-    // Sincronizar modelos (crear tablas si no existen)
     await sequelize.sync({ force: false });
 
-    // Verificar si ya hay datos
     const userCount = await UserModel.count();
     if (userCount > 0) {
       console.log('Ya existen datos en la base de datos. Omitiendo...');
       return;
     }
 
-    // Crear usuarios de prueba
     const users = [
       {
         firstName: 'Juan',
@@ -53,7 +50,6 @@ export const seedDatabase = async (): Promise<void> => {
     await UserModel.bulkCreate(users);
     console.log(`${users.length} usuarios de prueba creados`);
 
-    // Crear empresas de prueba
     const companies = [
       {
         nameCompany: 'Tech Solutions S.A.S',
@@ -78,7 +74,6 @@ export const seedDatabase = async (): Promise<void> => {
     await CompanyModel.bulkCreate(companies);
     console.log(` ${companies.length} empresas de prueba creadas`);
 
-    // Crear nóminas de prueba (vinculando usuarios con empresas)
     const payrolls = [
       {
         id_user: 1, // Juan
@@ -110,7 +105,6 @@ export const seedDatabase = async (): Promise<void> => {
     await PayrollModel.bulkCreate(payrolls);
     console.log(`${payrolls.length} nóminas de prueba creadas`);
 
-    // Obtener los datos con IDs generados
     const createdUsers = await UserModel.findAll();
     const createdCompanies = await CompanyModel.findAll();
     const createdPayrolls = await PayrollModel.findAll();

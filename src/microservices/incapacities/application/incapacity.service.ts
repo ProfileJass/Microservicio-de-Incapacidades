@@ -10,19 +10,16 @@ export class IncapacityService {
 
   async createIncapacity(dto: CreateIncapacityRequest): Promise<Incapacity> {
     try {
-      // Validar que el usuario exista
       const user = await UserModel.findByPk(dto.id_user);
       if (!user) {
         throw new Error(`Usuario con ID ${dto.id_user} no encontrado`);
       }
 
-      // Validar que la nómina exista
       const payroll = await PayrollModel.findByPk(dto.id_payroll);
       if (!payroll) {
         throw new Error(`Nómina con ID ${dto.id_payroll} no encontrada`);
       }
 
-      // Validar que la nómina pertenezca al usuario
       if (payroll.id_user !== dto.id_user) {
         throw new Error('La nómina no pertenece al usuario especificado');
       }

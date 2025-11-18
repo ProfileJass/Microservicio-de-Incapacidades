@@ -7,8 +7,6 @@ const testSeed = async () => {
     await connectDB();
     
     console.log('🗑️  Limpiando datos previos (opcional)...');
-    // Descomentar la siguiente línea si quieres forzar el seed
-    // await sequelize.sync({ force: true });
     
     console.log('🌱 Ejecutando seed...');
     await seedDatabase();
