@@ -124,6 +124,31 @@ export class IncapacityRepository implements IncapacityRepositoryInterface {
     }
   }
 
+  async findByUserIdAndStartDate(userId: number, startDate: Date): Promise<Incapacity | null> {
+    try {
+      const incapacity = await IncapacityModel.findOne({
+        where: {
+          id_user: userId,
+          start_date: startDate,
+        },
+        include: [
+          {
+            model: UserModel,
+            as: 'user',
+          },
+          {
+            model: PayrollModel,
+            as: 'payroll',
+          },
+        ],
+      });
+
+      return incapacity ? this.toDomain(incapacity) : null;
+    } catch (error) {
+      throw new Error(`Repository error: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+  }
+
   async update(id: number, updateData: Record<string, any>): Promise<Incapacity | null> {
     try {
       const incapacity = await IncapacityModel.findByPk(id);

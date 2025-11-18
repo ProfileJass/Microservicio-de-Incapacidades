@@ -5,109 +5,94 @@ import { IncapacityResponse } from './dto/incapacity.response';
 import { UserModel } from '../domain/model/user.model';
 import { CompanyModel } from '../domain/model/company.model';
 import { PayrollModel } from '../domain/model/payroll.model';
+import { ValidationError } from '../../../shared/errors/ValidationError';
+import { NotFoundError } from '../../../shared/errors/NotFoundError';
+import { ConflictError } from '../../../shared/errors/ConflictError';
 
 export class IncapacityService {
   constructor(private readonly incapacityRepository: IncapacityRepositoryInterface) {}
 
   async createIncapacity(dto: CreateIncapacityRequest): Promise<IncapacityResponse> {
-    try {
-      const user = await UserModel.findByPk(dto.id_user);
-      if (!user) {
-        throw new Error(`Usuario con ID ${dto.id_user} no encontrado`);
-      }
-
-      const payroll = await PayrollModel.findByPk(dto.id_payroll);
-      if (!payroll) {
-        throw new Error(`Nómina con ID ${dto.id_payroll} no encontrada`);
-      }
-
-      if (payroll.id_user !== dto.id_user) {
-        throw new Error('La nómina no pertenece al usuario especificado');
-      }
-
-      const startDate = new Date(dto.start_date);
-      const endDate = new Date(dto.end_date);
-
-      const incapacity = new Incapacity(
-        0, // Se asignará automáticamente por autoIncrement
-        dto.id_user,
-        dto.id_payroll,
-        startDate,
-        endDate,
-        dto.type,
-        IncapacityStatus.PENDIENTE,
-        dto.observacion
-      );
-
-      const createdIncapacity = await this.incapacityRepository.create(incapacity);
-      return this.mapToResponse(createdIncapacity);
-    } catch (error) {
-      if (error instanceof Error) {
-        throw new Error(`Failed to create incapacity: ${error.message}`);
-      }
-      throw new Error('Failed to create incapacity: Unknown error');
+    const user = await UserModel.findByPk(dto.id_user);
+    if (!user) {
+      throw new NotFoundError(`Usuario con ID ${dto.id_user} no encontrado`);
     }
+
+    const payroll = await PayrollModel.findByPk(dto.id_payroll);
+    if (!payroll) {
+      throw new NotFoundError(`Nómina con ID ${dto.id_payroll} no encontrada`);
+    }
+
+    if (payroll.id_user !== dto.id_user) {
+      throw new ValidationError('La nómina no pertenece al usuario especificado');
+    }
+
+    const startDate = new Date(dto.start_date);
+    const endDate = new Date(dto.end_date);
+
+    // Validar que no exista una incapacidad con la misma fecha de inicio para este usuario
+    const existingIncapacity = await this.incapacityRepository.findByUserIdAndStartDate(
+      dto.id_user,
+      startDate
+    );
+
+    if (existingIncapacity) {
+      throw new ConflictError('Ya existe una incapacidad radicada con esta fecha de inicio');
+    }
+
+    const incapacity = new Incapacity(
+      0, // Se asignará automáticamente por autoIncrement
+      dto.id_user,
+      dto.id_payroll,
+      startDate,
+      endDate,
+      dto.type,
+      IncapacityStatus.PENDIENTE,
+      dto.observacion
+    );
+
+    const createdIncapacity = await this.incapacityRepository.create(incapacity);
+    return this.mapToResponse(createdIncapacity);
   }
 
   async getAllIncapacities(): Promise<IncapacityResponse[]> {
-    try {
-      const incapacities = await this.incapacityRepository.findAll();
-      return incapacities.map(incapacity => this.mapToResponse(incapacity));
-    } catch (error) {
-      if (error instanceof Error) {
-        throw new Error(`Failed to retrieve incapacities: ${error.message}`);
-      }
-      throw new Error('Failed to retrieve incapacities: Unknown error');
-    }
+    const incapacities = await this.incapacityRepository.findAll();
+    return incapacities.map(incapacity => this.mapToResponse(incapacity));
   }
 
   async getIncapacitiesByUser(userId: number): Promise<IncapacityResponse[]> {
-    try {
-      if (!userId || userId <= 0) {
-        throw new Error('User ID is required');
-      }
-      const incapacities = await this.incapacityRepository.findByUserId(userId);
-      return incapacities.map(incapacity => this.mapToResponse(incapacity));
-    } catch (error) {
-      if (error instanceof Error) {
-        throw new Error(`Failed to retrieve user incapacities: ${error.message}`);
-      }
-      throw new Error('Failed to retrieve user incapacities: Unknown error');
+    if (!userId || userId <= 0) {
+      throw new ValidationError('User ID is required');
     }
+    const incapacities = await this.incapacityRepository.findByUserId(userId);
+    return incapacities.map(incapacity => this.mapToResponse(incapacity));
   }
 
   async updateIncapacity(id: number, dto: UpdateIncapacityRequest): Promise<IncapacityResponse> {
-    try {
-      this.validateIncapacityId(id);
+    this.validateIncapacityId(id);
 
-      const existingIncapacity = await this.findExistingIncapacity(id);
-      const updateData = this.buildUpdateData(dto);
-      this.validateDateConsistency(updateData, existingIncapacity);
+    const existingIncapacity = await this.findExistingIncapacity(id);
+    const updateData = this.buildUpdateData(dto);
+    this.validateDateConsistency(updateData, existingIncapacity);
 
-      const updatedIncapacity = await this.incapacityRepository.update(id, updateData);
-      if (!updatedIncapacity) {
-        throw new Error('Failed to update incapacity');
-      }
-
-      return this.mapToResponse(updatedIncapacity);
-    } catch (error) {
-      if (error instanceof Error) {
-        throw new Error(`Failed to update incapacity: ${error.message}`);
-      }
-      throw new Error('Failed to update incapacity: Unknown error');
+    const updatedIncapacity = await this.incapacityRepository.update(id, updateData);
+    if (!updatedIncapacity) {
+      throw new Error('Failed to update incapacity');
     }
+
+    return this.mapToResponse(updatedIncapacity);
   }
 
   private validateIncapacityId(id: number): void {
     if (!id || id <= 0) {
-      throw new Error('Incapacity ID is required');
+      throw new ValidationError('Incapacity ID is required');
     }
   }
 
   private async findExistingIncapacity(id: number): Promise<Incapacity> {
     const existingIncapacity = await this.incapacityRepository.findById(id);
     if (!existingIncapacity) {
-      throw new Error('Incapacity not found');
+      throw new NotFoundError('Incapacity not found');
     }
     return existingIncapacity;
   }
@@ -143,14 +128,14 @@ export class IncapacityService {
 
   private validateIncapacityType(type: IncapacityType): void {
     if (!Object.values(IncapacityType).includes(type)) {
-      throw new Error('Invalid incapacity type');
+      throw new ValidationError('Invalid incapacity type');
     }
   }
 
   private validateIncapacityStatus(status: IncapacityStatus): void {
     const statusValue = status as IncapacityStatus;
     if (!Object.values(IncapacityStatus).includes(statusValue)) {
-      throw new Error('Invalid incapacity status');
+      throw new ValidationError('Invalid incapacity status');
     }
   }
 
@@ -159,7 +144,7 @@ export class IncapacityService {
     const newEndDate = updateData.end_date || existingIncapacity.end_date;
 
     if (newEndDate < newStartDate) {
-      throw new Error('End date must be after start date');
+      throw new ValidationError('End date must be after start date');
     }
   }
 
