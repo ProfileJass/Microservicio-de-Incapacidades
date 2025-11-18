@@ -6,49 +6,21 @@ import { sequelize } from './database';
 export const seedDatabase = async (): Promise<void> => {
   try {
 
-    await sequelize.sync({ force: false });
+    // Ya no es necesario sincronizar ya que las tablas están creadas en init-db.sql
+    // await sequelize.sync({ force: false });
 
+    // Los usuarios se crean desde el microservicio de usuarios
+    // Solo verificamos que existan datos
     const userCount = await UserModel.count();
-    if (userCount > 0) {
-      console.log('Ya existen datos en la base de datos. Omitiendo...');
+    if (userCount === 0) {
+      console.log('No hay usuarios en la base de datos. Crea usuarios primero desde el microservicio de usuarios.');
       return;
     }
 
-    const users = [
-      {
-        firstName: 'Juan',
-        lastName: 'Pérez García',
-        email: 'juan.perez@empresa.com',
-        role: 'empleado',
-      },
-      {
-        firstName: 'María',
-        lastName: 'González López',
-        email: 'maria.gonzalez@empresa.com',
-        role: 'empleado',
-      },
-      {
-        firstName: 'Carlos',
-        lastName: 'Rodríguez Martínez',
-        email: 'carlos.rodriguez@empresa.com',
-        role: 'administrador',
-      },
-      {
-        firstName: 'Ana',
-        lastName: 'Fernández Ruiz',
-        email: 'ana.fernandez@empresa.com',
-        role: 'empleado',
-      },
-      {
-        firstName: 'Luis',
-        lastName: 'Martínez Sánchez',
-        email: 'luis.martinez@empresa.com',
-        role: 'empleado',
-      },
-    ];
+    // Omitir creación de usuarios - se manejan desde el microservicio de usuarios
+    // await UserModel.bulkCreate(users);
 
-    await UserModel.bulkCreate(users);
-    console.log(`${users.length} usuarios de prueba creados`);
+    console.log(`${userCount} usuarios existentes en la base de datos`);
 
     const companies = [
       {
