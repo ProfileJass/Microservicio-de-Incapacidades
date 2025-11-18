@@ -12,6 +12,5 @@ dataRouter.get('/payrolls/:id', dataController.getPayrollById);
 dataRouter.get('/payrolls/user/:userId', dataController.getPayrollsByUser);
 
 dataRouter.get('/companies', dataController.getAllCompanies);
-dataRouter.get('/companies', dataController.getAllCompanies);
 
 export default dataRouter;

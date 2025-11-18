@@ -1,3 +1,4 @@
+import './shared/config/env.config'; // Valida variables de entorno primero
 import app from './app';
 import { connectDB } from './config/database';
 import { config } from './config/config';
@@ -9,6 +10,7 @@ const startServer = async () => {
     
     app.listen(config.port, () => {
       console.log(`✅ IncapacitiesService corriendo en http://localhost:${config.port}`);
+      console.log(`📊 Entorno: ${config.nodeEnv}`);
     });
   } catch (error) {
     console.error('❌ Error al iniciar el servidor:', error);
