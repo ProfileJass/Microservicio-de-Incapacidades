@@ -18,7 +18,21 @@ export class IncapacityRepository implements IncapacityRepositoryInterface {
         observacion: incapacity.observacion,
       });
 
-      return this.toDomain(createdIncapacity);
+      // Recargar la incapacidad con las relaciones incluidas
+      const incapacityWithRelations = await IncapacityModel.findByPk(createdIncapacity.id_incapacity, {
+        include: [
+          {
+            model: UserModel,
+            as: 'user',
+          },
+          {
+            model: PayrollModel,
+            as: 'payroll',
+          },
+        ],
+      });
+
+      return this.toDomain(incapacityWithRelations!);
     } catch (error) {
       throw new Error(`Repository error: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
@@ -158,6 +172,21 @@ export class IncapacityRepository implements IncapacityRepositoryInterface {
   }
 
   private toDomain(model: IncapacityModel): Incapacity {
+    const user = (model as any).user ? {
+      id_user: (model as any).user.id_user,
+      firstName: (model as any).user.firstName,
+      lastName: (model as any).user.lastName,
+      email: (model as any).user.email,
+      role: (model as any).user.role,
+    } : undefined;
+
+    const payroll = (model as any).payroll ? {
+      id_payroll: (model as any).payroll.id_payroll,
+      id_user: (model as any).payroll.id_user,
+      id_company: (model as any).payroll.id_company,
+      status: (model as any).payroll.status,
+    } : undefined;
+
     return new Incapacity(
       model.id_incapacity,
       model.id_user,
@@ -166,7 +195,9 @@ export class IncapacityRepository implements IncapacityRepositoryInterface {
       model.end_date,
       model.type as IncapacityType,
       model.status as IncapacityStatus,
-      model.observacion
+      model.observacion,
+      user,
+      payroll
     );
   }
 }

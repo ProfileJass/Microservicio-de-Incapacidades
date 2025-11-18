@@ -20,7 +20,20 @@ export class Incapacity {
     public readonly end_date: Date,
     public readonly type: IncapacityType,
     public readonly status: IncapacityStatus,
-    public readonly observacion?: string
+    public readonly observacion?: string,
+    public readonly user?: {
+      id_user: number;
+      firstName: string;
+      lastName: string;
+      email: string;
+      role: string;
+    },
+    public readonly payroll?: {
+      id_payroll: number;
+      id_user: number;
+      id_company: number;
+      status: string;
+    }
   ) {
     this.validate();
   }
@@ -70,7 +83,9 @@ export class Incapacity {
       updatedEndDate,
       updatedType,
       updatedStatus,
-      updatedObservacion
+      updatedObservacion,
+      this.user,
+      this.payroll
     );
   }
 }

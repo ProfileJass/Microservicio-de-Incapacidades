@@ -1,6 +1,7 @@
 import { Incapacity, IncapacityType, IncapacityStatus } from '../domain/incapacity.entity';
 import { IncapacityRepositoryInterface } from '../domain/ports/incapacity.repository.interface';
 import { CreateIncapacityRequest, UpdateIncapacityRequest } from './dto/incapacity.request';
+import { IncapacityResponse } from './dto/incapacity.response';
 import { UserModel } from '../domain/model/user.model';
 import { CompanyModel } from '../domain/model/company.model';
 import { PayrollModel } from '../domain/model/payroll.model';
@@ -8,7 +9,7 @@ import { PayrollModel } from '../domain/model/payroll.model';
 export class IncapacityService {
   constructor(private readonly incapacityRepository: IncapacityRepositoryInterface) {}
 
-  async createIncapacity(dto: CreateIncapacityRequest): Promise<Incapacity> {
+  async createIncapacity(dto: CreateIncapacityRequest): Promise<IncapacityResponse> {
     try {
       const user = await UserModel.findByPk(dto.id_user);
       if (!user) {
@@ -38,7 +39,8 @@ export class IncapacityService {
         dto.observacion
       );
 
-      return await this.incapacityRepository.create(incapacity);
+      const createdIncapacity = await this.incapacityRepository.create(incapacity);
+      return this.mapToResponse(createdIncapacity);
     } catch (error) {
       if (error instanceof Error) {
         throw new Error(`Failed to create incapacity: ${error.message}`);
@@ -47,9 +49,10 @@ export class IncapacityService {
     }
   }
 
-  async getAllIncapacities(): Promise<Incapacity[]> {
+  async getAllIncapacities(): Promise<IncapacityResponse[]> {
     try {
-      return await this.incapacityRepository.findAll();
+      const incapacities = await this.incapacityRepository.findAll();
+      return incapacities.map(incapacity => this.mapToResponse(incapacity));
     } catch (error) {
       if (error instanceof Error) {
         throw new Error(`Failed to retrieve incapacities: ${error.message}`);
@@ -58,12 +61,13 @@ export class IncapacityService {
     }
   }
 
-  async getIncapacitiesByUser(userId: number): Promise<Incapacity[]> {
+  async getIncapacitiesByUser(userId: number): Promise<IncapacityResponse[]> {
     try {
       if (!userId || userId <= 0) {
         throw new Error('User ID is required');
       }
-      return await this.incapacityRepository.findByUserId(userId);
+      const incapacities = await this.incapacityRepository.findByUserId(userId);
+      return incapacities.map(incapacity => this.mapToResponse(incapacity));
     } catch (error) {
       if (error instanceof Error) {
         throw new Error(`Failed to retrieve user incapacities: ${error.message}`);
@@ -72,7 +76,7 @@ export class IncapacityService {
     }
   }
 
-  async updateIncapacity(id: number, dto: UpdateIncapacityRequest): Promise<Incapacity> {
+  async updateIncapacity(id: number, dto: UpdateIncapacityRequest): Promise<IncapacityResponse> {
     try {
       this.validateIncapacityId(id);
 
@@ -85,7 +89,7 @@ export class IncapacityService {
         throw new Error('Failed to update incapacity');
       }
 
-      return updatedIncapacity;
+      return this.mapToResponse(updatedIncapacity);
     } catch (error) {
       if (error instanceof Error) {
         throw new Error(`Failed to update incapacity: ${error.message}`);
@@ -157,5 +161,27 @@ export class IncapacityService {
     if (newEndDate < newStartDate) {
       throw new Error('End date must be after start date');
     }
+  }
+
+  private mapToResponse(incapacity: Incapacity): IncapacityResponse {
+    if (!incapacity.user || !incapacity.payroll) {
+      throw new Error('User and payroll data are required to create response');
+    }
+
+    return {
+      id_incapacity: incapacity.id_incapacity,
+      id_user: incapacity.id_user,
+      firstName: incapacity.user.firstName,
+      lastName: incapacity.user.lastName,
+      email: incapacity.user.email,
+      role: incapacity.user.role,
+      id_payroll: incapacity.id_payroll,
+      id_company: incapacity.payroll.id_company,
+      start_date: incapacity.start_date,
+      end_date: incapacity.end_date,
+      type: incapacity.type,
+      status: incapacity.status,
+      observacion: incapacity.observacion,
+    };
   }
 }
