@@ -1,9 +1,22 @@
-import { Model, DataTypes } from 'sequelize';
+import { Model, DataTypes, Optional } from 'sequelize';
 import { sequelize } from '../../config/database';
 import { UserModel } from './user.model';
 import { PayrollModel } from './payroll.model';
 
-export class IncapacityModel extends Model {
+interface IncapacityAttributes {
+  id_incapacity: number;
+  id_user: number;
+  id_payroll: number;
+  start_date: Date;
+  end_date: Date;
+  type: string;
+  status: string;
+  observacion?: string;
+}
+
+interface IncapacityCreationAttributes extends Optional<IncapacityAttributes, 'id_incapacity' | 'observacion'> {}
+
+export class IncapacityModel extends Model<IncapacityAttributes, IncapacityCreationAttributes> implements IncapacityAttributes {
   declare id_incapacity: number;
   declare id_user: number;
   declare id_payroll: number;

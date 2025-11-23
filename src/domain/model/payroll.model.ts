@@ -1,9 +1,18 @@
-import { Model, DataTypes } from 'sequelize';
+import { Model, DataTypes, Optional } from 'sequelize';
 import { sequelize } from '../../config/database';
 import { UserModel } from './user.model';
 import { CompanyModel } from './company.model';
 
-export class PayrollModel extends Model {
+interface PayrollAttributes {
+  id_payroll: number;
+  id_user: number;
+  id_company: number;
+  status: string;
+}
+
+interface PayrollCreationAttributes extends Optional<PayrollAttributes, 'id_payroll'> {}
+
+export class PayrollModel extends Model<PayrollAttributes, PayrollCreationAttributes> implements PayrollAttributes {
   declare id_payroll: number;
   declare id_user: number;
   declare id_company: number;
