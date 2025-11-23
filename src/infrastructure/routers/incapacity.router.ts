@@ -12,6 +12,7 @@ const router = Router();
 
 router.post('/create', authenticateToken, authorizeEmployee, incapacityController.createIncapacity);
 router.get('/getByUser/:userId', authenticateToken, authorizeEmployee, incapacityController.getIncapacitiesByUser);
+router.get('/pdf/:filename', authenticateToken, incapacityController.downloadPDF);
 
 router.get('/getAll', authenticateToken, authorizeAdmin, incapacityController.getAllIncapacities);
 router.put('/update/:id', authenticateToken, authorizeAdmin, incapacityController.updateIncapacity);
